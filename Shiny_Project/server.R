@@ -13,29 +13,34 @@ shinyServer(function(input, output){
   output$plot1 <- renderPlot({    
     Permits %>%
       ggplot() + geom_bar(aes(x = Category,fill = Category), position = "dodge")+ 
-      theme(axis.text.x = element_blank(), axis.ticks = element_blank())
+      theme(axis.text.x = element_blank(), axis.ticks = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())+labs(x = "")
   
 })
   output$plot2 <- renderPlot({    
     Permits %>%
-      ggplot() + geom_bar(aes(Borough, fill = SubCategoryName), position = "dodge")+
-      theme(axis.text.x = element_text(angle = 90))+scale_fill_discrete(name = "Subcategory")
+      ggplot() + geom_bar(aes(x = Category,fill = Category), position = "dodge")+ 
+      theme(axis.text.x = element_blank(), axis.ticks = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())+facet_wrap(~Borough)+labs(x = "")
+ })
+  output$plot3 <- renderPlot({    
+    Permits %>% 
+      ggplot() + geom_bar(aes(Borough, fill = SubCategoryName), position = position_dodge(60), width = 50)+
+      scale_fill_discrete(name = "Subcategory")+facet_wrap(~Borough)+ theme(axis.text.x = element_blank(), axis.ticks = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())+labs(x = "")
   
 })
-     output$plot3 <- renderPlot({    
-    Permits %>%
-      ggplot() + geom_boxplot(aes(Category, Start.Year, alpha = 0.1, color = "yellow") ) + theme(axis.text.x = element_text(angle = 90), legend.position="none")+labs(y= "Year")
-    
-    })
-     
      output$plot4 <- renderPlot({    
        Permits %>%
-         ggplot() + geom_boxplot(aes(SubCategoryName, Start.Year, alpha = 0.1, color = "yellow") ) + 
-         theme(axis.text.x = element_text(angle = 90), legend.position="none" )+labs(y= "Year", x= "SubCategory")
-})
+         filter(Start.Year == 2018:2020)%>%
+         ggplot() + geom_bar(aes(Category, fill = Category) ) + theme(axis.text.x = element_blank(), axis.ticks = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())+facet_wrap(~Start.Year)+labs(x = "")
+    })
+     
      output$plot5 <- renderPlot({    
+       Permits %>%
+         filter(Start.Year == 2018:2020)%>%
+         ggplot() + geom_bar(aes(SubCategoryName, fill = SubCategoryName) ) + theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank(), axis.text.x = element_blank(), axis.ticks = element_blank() )+facet_wrap(~Start.Year) + scale_fill_discrete(name = "Subcategory") + labs(x = "")
+})
+     output$plot6 <- renderPlot({    
        Permits%>%
-         ggplot() + geom_boxplot(aes(Category, Difference.In.Time, color = Category))+ylim(0, 2000)+facet_wrap(~Start.Year)+labs(y= "Duration of Film Permit (Hrs)", x = "")+theme(axis.text.x = element_blank(), axis.ticks = element_blank())
+         ggplot() + geom_boxplot(aes(Category, Difference.In.Time, color = Category))+ylim(0, 50)+facet_wrap(~Start.Year)+labs(y= "Duration of Film Permit (Hrs)", x = "")+theme(axis.text.x = element_blank(), axis.ticks = element_blank())
        
      })
 })     
